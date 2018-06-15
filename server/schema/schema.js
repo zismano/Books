@@ -110,6 +110,22 @@ const Mutation = new GraphQLObjectType({
 				});	// author is a new instance of Author from mongoose
 				return author.save();	// save author to mongodb and then return it
 			}
+		},
+		addBook: {
+			type: BookType,
+			args: {
+				name: {type: GraphQLString},
+				genre: {type: GraphQLString},
+				authorId: {type:GraphQLID}
+			},
+			resolve(parent, args) {
+				let book = new Book({
+					name: args.name,
+					genre: args.genre,
+					authorId: args.authorId
+				});
+				return book.save();
+			}
 		}
 	}
 })
