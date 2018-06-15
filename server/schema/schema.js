@@ -22,6 +22,7 @@ const {
 // 	{name: 'The Light Fantastic', genre: 'Fantasy', id: '6', authorId: '3'},
 // ];
 
+ 
 // var authors = [
 // 	{name: 'Patrick Rothfuss', age: 44, id: '1'},
 // 	{name: 'Brandon Sanderson', age: 42, id: '2'},
@@ -38,7 +39,8 @@ const BookType = new GraphQLObjectType({
 			type: AuthorType,
 			resolve(parent, args) {	// use of resolve to get related data in graphql. Parent is a book
 				console.log(parent);
-			//	return _.find(authors, {id: parent.authorId})
+			//	return _.find(authors, {id: parent.authorId})	// works with dummy data
+				return Author.findById(parent.authorId);
 			}
 		}
 	})
@@ -54,6 +56,7 @@ const AuthorType = new GraphQLObjectType({
 			type: new GraphQLList(BookType), // to get array of books
 			resolve(parent, args) {
 			//	return _.filter(books, {authorId: parent.id});
+				return Book.find({authorId: parent.id});
 			}
 		}
 	})
@@ -70,6 +73,7 @@ const RootQuery = new GraphQLObjectType({
 				// code to get data from db/other source
 				console.log(typeof args.id);
 			//	return _.find(books, {id: args.id});
+				return Book.findById(args.id);
 			}
 		},
 		author: {
@@ -77,18 +81,21 @@ const RootQuery = new GraphQLObjectType({
 			args: { id: {type: GraphQLID}},
 			resolve(parent, args) {
 			//	return _.find(authors, {id: args.id});
+				return Author.findById(args.id);
 			}
 		},
 		books: {
 			type: new GraphQLList(BookType),
 			resolve(parent, args) {
 			//	return books;
+				return Book.find({});	// return all books
 			}
 		},
 		authors: {
 			type: new GraphQLList(AuthorType),
 			resolve(parent, args) {
 			//	return authors;
+				return Author.find({});
 			}
 		}
 	}
